@@ -8,10 +8,11 @@ import routes from './routes/index.js';
 import { sequelize } from './models/index.js';
 
 const app = express();
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 3002; // Changed from 3001 to 3002
 
-// Serves static files in the entire client's dist folder
-app.use(express.static('../client/dist'));
+// Comment out the static file serving during development
+// Uncomment for production
+// app.use(express.static('../client/dist'));
 
 app.use(express.json());
 app.use(routes);

@@ -13,12 +13,13 @@ const retrieveTickets = async () => {
         }
       }
     );
-    const data = await response.json();
 
     if(!response.ok) {
-      throw new Error('invalid API response, check network tab!');
+      const errorData = await response.json().catch(() => null);
+      throw new Error(errorData?.message || 'Invalid API response, check network tab!');
     }
 
+    const data = await response.json();
     return data;
   } catch (err) {
     console.log('Error from data retrieval: ', err);
@@ -38,11 +39,12 @@ const retrieveTicket = async (id: number | null): Promise<TicketData> => {
       }
     );
 
-    const data = await response.json();
-
     if(!response.ok) {
-      throw new Error('Could not invalid API response, check network tab!');
+      const errorData = await response.json().catch(() => null);
+      throw new Error(errorData?.message || 'Could not retrieve ticket, check network tab!');
     }
+
+    const data = await response.json();
     return data;
   } catch (err) {
     console.log('Error from data retrieval: ', err);
@@ -52,28 +54,33 @@ const retrieveTicket = async (id: number | null): Promise<TicketData> => {
 
 const createTicket = async (body: TicketData) => {
   try {
+    // Log what we're sending to help with debugging
+    console.log('Sending ticket data:', body);
+    
     const response = await fetch(
       '/api/tickets/', {
         method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${Auth.getToken()}`
-          },
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${Auth.getToken()}`
+        },
         body: JSON.stringify(body)
       }
+    );
 
-    )
-    const data = response.json();
-
+    // Check if response is okay before parsing
     if(!response.ok) {
-      throw new Error('invalid API response, check network tab!');
+      // Try to get error details from response
+      const errorData = await response.json().catch(() => null);
+      console.error('Server error response:', errorData);
+      throw new Error(errorData?.message || `Server error: ${response.status} ${response.statusText}`);
     }
 
+    const data = await response.json();
     return data;
-
   } catch (err) {
-    console.log('Error from Ticket Creation: ', err);
-    return Promise.reject('Could not create ticket');
+    console.error('Error from Ticket Creation: ', err);
+    return Promise.reject(err.message || 'Could not create ticket');
   }
 }
 
@@ -88,13 +95,14 @@ const updateTicket = async (ticketId: number, body: TicketData): Promise<TicketD
         },
         body: JSON.stringify(body)
       }
-    )
-    const data = await response.json();
+    );
 
     if(!response.ok) {
-      throw new Error('invalid API response, check network tab!');
+      const errorData = await response.json().catch(() => null);
+      throw new Error(errorData?.message || 'Invalid API response, check network tab!');
     }
 
+    const data = await response.json();
     return data;
   } catch (err) {
     console.error('Update did not work', err);
@@ -112,13 +120,14 @@ const deleteTicket = async (ticketId: number): Promise<ApiMessage> => {
           Authorization: `Bearer ${Auth.getToken()}`
         }
       }
-    )
-    const data = await response.json();
+    );
 
     if(!response.ok) {
-      throw new Error('invalid API response, check network tab!');
+      const errorData = await response.json().catch(() => null);
+      throw new Error(errorData?.message || 'Invalid API response, check network tab!');
     }
 
+    const data = await response.json();
     return data;
   } catch (err) {
     console.error('Error in deleting ticket', err);

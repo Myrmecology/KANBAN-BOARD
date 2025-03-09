@@ -1,13 +1,18 @@
-import ReactDOM from 'react-dom/client';
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import './index.css';
+import React from 'react'
+import ReactDOM from 'react-dom/client'
+import { createBrowserRouter, RouterProvider, Navigate } from 'react-router-dom'
+import App from './App.tsx'
+import './index.css'
 
-import App from './App.tsx';
-import Board from './pages/Board.tsx';
-import ErrorPage from './pages/ErrorPage.tsx';
-import EditTicket from './pages/EditTicket.tsx';
-import CreateTicket from './pages/CreateTicket.tsx';
-import Login from './pages/Login.tsx';
+// Pages
+import Board from './pages/Board.tsx'
+import Login from './pages/Login.tsx'
+import CreateTicket from './pages/CreateTicket.tsx'
+import EditTicket from './pages/EditTicket.tsx'
+import ErrorPage from './pages/ErrorPage.tsx'
+
+// Components
+import ProtectedRoute from './components/ProtectedRoute.tsx'
 
 const router = createBrowserRouter([
   {
@@ -17,25 +22,42 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <Board />
-      }, 
-      {
-        path: '/edit',
-        element: <EditTicket />
+        element: <Navigate to="/login" />,
       },
       {
-        path: '/create',
-        element: <CreateTicket />
+        path: 'login',
+        element: <Login />,
       },
       {
-        path: '/login',
-        element: <Login />
-      }
-    ]
-  }
-])
+        path: 'board',
+        element: (
+          <ProtectedRoute>
+            <Board />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: 'create-ticket',
+        element: (
+          <ProtectedRoute>
+            <CreateTicket />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: 'edit-ticket/:id',
+        element: (
+          <ProtectedRoute>
+            <EditTicket />
+          </ProtectedRoute>
+        ),
+      },
+    ],
+  },
+]);
 
-const rootElement = document.getElementById('root');
-if (rootElement) {
-  ReactDOM.createRoot(rootElement).render(<RouterProvider router={router} />);
-}
+ReactDOM.createRoot(document.getElementById('root')!).render(
+  <React.StrictMode>
+    <RouterProvider router={router} />
+  </React.StrictMode>
+)
