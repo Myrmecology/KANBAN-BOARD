@@ -68,7 +68,7 @@ const Board = () => {
       ) : (
           <div className='board'>
             <button type='button' id='create-ticket-link'>
-              <Link to='/create' >New Ticket</Link>
+              <Link to='/create-ticket'>New Ticket</Link>
             </button>
             <div className='board-display'>
               {boardStates.map((status) => {
