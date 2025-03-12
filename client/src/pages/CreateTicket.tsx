@@ -17,14 +17,14 @@ const CreateTicket = () => {
 
   const navigate = useNavigate();
 
-  const [users, setUsers] = useState<UserData[] | undefined>([]);
+  const [users, setUsers] = useState<UserData[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState('');
 
   const getAllUsers = async () => {
     try {
       const data = await retrieveUsers();
-      setUsers(data);
+      setUsers(data || []);
     } catch (err) {
       console.error('Failed to retrieve user info', err);
       setError('Failed to load users. Please try again.');
@@ -44,7 +44,7 @@ const CreateTicket = () => {
     }
     
     setIsSubmitting(true);
-    setError(null);
+    setError('');
     
     try {
       // Ensure assignedUserId is a number
@@ -131,11 +131,12 @@ const CreateTicket = () => {
             value={String(newTicket.assignedUserId)}
             onChange={handleUserChange}
           >
-            {users ? users.map((user) => (
+            {users.map((user) => (
               <option key={user.id} value={String(user.id)}>
                 {user.username}
               </option>
-            )) : (
+            ))}
+            {users.length === 0 && (
               <option value="">No users available</option>
             )}
           </select>
