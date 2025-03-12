@@ -272,15 +272,28 @@ body {
   color: #48bb78;
 }
 
-/* Ticket Card Styling */
+/* Updated Ticket Card Styling, all CREDIT GOES TO SAM */
 .ticket-card {
   background: white;
   border-radius: 6px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   padding: 1rem;
   margin-bottom: 1rem;
-  border-left: 3px solid var(--primary-color);
+  border-left: 3px solid #ddd; /* Default border */
   transition: var(--transition);
+}
+
+/* Category-specific styling */
+.swimlane.todo .ticket-card {
+  border-left: 3px solid #4299e1; /* Blue border for Todo tickets */
+}
+
+.swimlane.inprogress .ticket-card {
+  border-left: 3px solid #805ad5; /* Purple border for In Progress tickets */
+}
+
+.swimlane.done .ticket-card {
+  border-left: 3px solid #48bb78; /* Green border for Done tickets */
 }
 
 .ticket-card:hover {
