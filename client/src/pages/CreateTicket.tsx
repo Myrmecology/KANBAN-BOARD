@@ -19,7 +19,7 @@ const CreateTicket = () => {
 
   const [users, setUsers] = useState<UserData[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [error, setError] = useState('');
+  const [errorMsg, setErrorMsg] = useState('');
 
   const getAllUsers = async () => {
     try {
@@ -27,7 +27,7 @@ const CreateTicket = () => {
       setUsers(data || []);
     } catch (err) {
       console.error('Failed to retrieve user info', err);
-      setError('Failed to load users. Please try again.');
+      setErrorMsg('Failed to load users. Please try again.');
     }
   };
 
@@ -39,12 +39,12 @@ const CreateTicket = () => {
     e.preventDefault();
     
     if (!newTicket.name || !newTicket.description) {
-      setError('Please fill out all required fields');
+      setErrorMsg('Please fill out all required fields');
       return;
     }
     
     setIsSubmitting(true);
-    setError('');
+    setErrorMsg('');
     
     try {
       // Ensure assignedUserId is a number
@@ -61,7 +61,7 @@ const CreateTicket = () => {
       navigate('/board');
     } catch (err) {
       console.error('Failed to create ticket:', err);
-      setError(err instanceof Error ? err.message : 'Failed to create ticket. Please try again.');
+      setErrorMsg(err instanceof Error ? err.message : 'Failed to create ticket. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
@@ -82,15 +82,21 @@ const CreateTicket = () => {
     setNewTicket({ ...newTicket, [name]: parseInt(value, 10) });
   };
 
+  // Function to safely convert potentially null values to strings
+  const safeValue = (value: any): string => {
+    if (value === null || value === undefined) return '';
+    return String(value);
+  };
+
   return (
     <>
       <div className='container'>
         <form className='form' onSubmit={handleSubmit}>
           <h1>Create Ticket</h1>
           
-          {error && (
+          {errorMsg && (
             <div className="error-message" style={{ color: 'red', marginBottom: '1rem' }}>
-              {error}
+              {errorMsg}
             </div>
           )}
           
@@ -98,7 +104,7 @@ const CreateTicket = () => {
           <textarea 
             id='tName'
             name='name'
-            value={newTicket.name}
+            value={safeValue(newTicket.name)}
             onChange={handleTextAreaChange}
             required
           />
@@ -107,7 +113,7 @@ const CreateTicket = () => {
           <select 
             name='status' 
             id='tStatus'
-            value={newTicket.status}
+            value={safeValue(newTicket.status)}
             onChange={handleTextChange}
           >
             <option value='Todo'>Todo</option>
@@ -119,7 +125,7 @@ const CreateTicket = () => {
           <textarea 
             id='tDescription'
             name='description'
-            value={newTicket.description}
+            value={safeValue(newTicket.description)}
             onChange={handleTextAreaChange}
             required
           />
@@ -128,7 +134,7 @@ const CreateTicket = () => {
           <select
             id='tUserId'
             name='assignedUserId'
-            value={String(newTicket.assignedUserId)}
+            value={safeValue(newTicket.assignedUserId)}
             onChange={handleUserChange}
           >
             {users.map((user) => (
