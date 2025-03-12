@@ -65,7 +65,7 @@ const CreateTicket = () => {
       }
     } catch (err) {
       console.error('Failed to create ticket:', err);
-      setError('Failed to create ticket. Please try again.');
+      setError(err instanceof Error ? err.message : 'Failed to create ticket. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
@@ -132,7 +132,7 @@ const CreateTicket = () => {
           <select
             id='tUserId'
             name='assignedUserId'
-            value={newTicket?.assignedUserId || ''}
+            value={newTicket?.assignedUserId !== null ? newTicket.assignedUserId : ''}
             onChange={handleUserChange}
           >
             {users ? users.map((user) => (

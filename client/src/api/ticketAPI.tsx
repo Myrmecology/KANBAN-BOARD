@@ -80,7 +80,7 @@ const createTicket = async (body: TicketData) => {
     return data;
   } catch (err) {
     console.error('Error from Ticket Creation: ', err);
-    return Promise.reject(err.message || 'Could not create ticket');
+    return Promise.reject(err instanceof Error ? err.message : 'Could not create ticket');
   }
 }
 
