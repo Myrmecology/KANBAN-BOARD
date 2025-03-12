@@ -15,6 +15,7 @@ const Board = () => {
   const [tickets, setTickets] = useState<TicketData[]>([]);
   const [error, setError] = useState(false);
   const [loginCheck, setLoginCheck] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   const checkLogin = () => {
     if(auth.loggedIn()) {
@@ -23,12 +24,15 @@ const Board = () => {
   };
 
   const fetchTickets = async () => {
+    setIsLoading(true);
     try {
       const data = await retrieveTickets();
       setTickets(data);
     } catch (err) {
       console.error('Failed to retrieve tickets:', err);
       setError(true);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -66,10 +70,17 @@ const Board = () => {
           </h1>
         </div>  
       ) : (
-          <div className='board'>
-            <button type='button' id='create-ticket-link'>
-              <Link to='/create-ticket'>New Ticket</Link>
-            </button>
+        <div className='board-container'>
+          <div className='board-header'>
+            <h1 className='board-title'>Your Kanban Board</h1>
+            <Link to='/create-ticket' className='create-ticket-button'>
+              + New Ticket
+            </Link>
+          </div>
+          
+          {isLoading ? (
+            <div className="loading-message">Loading tickets...</div>
+          ) : (
             <div className='board-display'>
               {boardStates.map((status) => {
                 const filteredTickets = tickets.filter(ticket => ticket.status === status);
@@ -83,8 +94,9 @@ const Board = () => {
                 );
               })}
             </div>
-          </div>
-        )
+          )}
+        </div>
+      )
     }
     </>
   );
