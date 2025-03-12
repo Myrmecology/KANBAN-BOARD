@@ -6,16 +6,14 @@ import { UserData } from '../interfaces/UserData';
 import { retrieveUsers } from '../api/userAPI';
 
 const CreateTicket = () => {
-  const [newTicket, setNewTicket] = useState<TicketData | undefined>(
-    {
-      id: 0,
-      name: '',
-      description: '',
-      status: 'Todo',
-      assignedUserId: 1,
-      assignedUser: null
-    }
-  );
+  const [newTicket, setNewTicket] = useState<TicketData>({
+    id: 0,
+    name: '',
+    description: '',
+    status: 'Todo',
+    assignedUserId: 1,
+    assignedUser: null
+  });
 
   const navigate = useNavigate();
 
@@ -40,7 +38,7 @@ const CreateTicket = () => {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     
-    if (!newTicket?.name || !newTicket?.description) {
+    if (!newTicket.name || !newTicket.description) {
       setError('Please fill out all required fields');
       return;
     }
@@ -49,20 +47,18 @@ const CreateTicket = () => {
     setError(null);
     
     try {
-      if (newTicket) {
-        // Ensure assignedUserId is a number
-        const ticketToCreate = {
-          ...newTicket,
-          assignedUserId: Number(newTicket.assignedUserId)
-        };
-        
-        console.log('Creating ticket:', ticketToCreate);
-        const data = await createTicket(ticketToCreate);
-        console.log('Ticket created successfully:', data);
-        
-        // Navigate to board instead of root to avoid redirect to login
-        navigate('/board');
-      }
+      // Ensure assignedUserId is a number
+      const ticketToCreate = {
+        ...newTicket,
+        assignedUserId: Number(newTicket.assignedUserId)
+      };
+      
+      console.log('Creating ticket:', ticketToCreate);
+      const data = await createTicket(ticketToCreate);
+      console.log('Ticket created successfully:', data);
+      
+      // Navigate to board instead of root to avoid redirect to login
+      navigate('/board');
     } catch (err) {
       console.error('Failed to create ticket:', err);
       setError(err instanceof Error ? err.message : 'Failed to create ticket. Please try again.');
@@ -73,17 +69,17 @@ const CreateTicket = () => {
 
   const handleTextAreaChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    setNewTicket((prev) => (prev ? { ...prev, [name]: value } : undefined));
+    setNewTicket({ ...newTicket, [name]: value });
   };
 
   const handleTextChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    setNewTicket((prev) => (prev ? { ...prev, [name]: value } : undefined));
+    setNewTicket({ ...newTicket, [name]: value });
   };
 
   const handleUserChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    setNewTicket((prev) => (prev ? { ...prev, [name]: parseInt(value, 10) } : undefined));
+    setNewTicket({ ...newTicket, [name]: parseInt(value, 10) });
   };
 
   return (
@@ -102,7 +98,7 @@ const CreateTicket = () => {
           <textarea 
             id='tName'
             name='name'
-            value={newTicket?.name || ''}
+            value={newTicket.name}
             onChange={handleTextAreaChange}
             required
           />
@@ -111,7 +107,7 @@ const CreateTicket = () => {
           <select 
             name='status' 
             id='tStatus'
-            value={newTicket?.status || ''}
+            value={newTicket.status}
             onChange={handleTextChange}
           >
             <option value='Todo'>Todo</option>
@@ -123,7 +119,7 @@ const CreateTicket = () => {
           <textarea 
             id='tDescription'
             name='description'
-            value={newTicket?.description || ''}
+            value={newTicket.description}
             onChange={handleTextAreaChange}
             required
           />
@@ -132,11 +128,11 @@ const CreateTicket = () => {
           <select
             id='tUserId'
             name='assignedUserId'
-            value={newTicket?.assignedUserId !== null ? newTicket.assignedUserId : ''}
+            value={String(newTicket.assignedUserId)}
             onChange={handleUserChange}
           >
             {users ? users.map((user) => (
-              <option key={user.id} value={user.id}>
+              <option key={user.id} value={String(user.id)}>
                 {user.username}
               </option>
             )) : (
