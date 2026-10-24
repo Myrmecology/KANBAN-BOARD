@@ -260,6 +260,4 @@ Simply refreshing the page or restarting the development servers usually resolve
 
 This project is licensed under the MIT License - see the LICENSE file for details.
 
-Render Link 
 Happy coding everyone 
-LINK TO LIVE EXAMPLE: https://drive.google.com/file/d/1y1qaJ5-knamD6mQ-nJ7WMO-jDVVzTTuY/view
